@@ -13,6 +13,7 @@ import pregunta5 from "../images/PREGUNTA 5-1.png"; // Importar imagen de la pre
 import respuesta5 from "../images/PREGUNTA 5-2.png"; // Importar imagen de la respuesta 5
 import cierre from "../images/PANTALLA DE CIERRE.png"; // Importar imagen de cierre
 
+
 const Preguntas = () => {
   const [currentQuestion, setCurrentQuestion] = useState("pregunta1");
   const [mostrarRespuesta, setMostrarRespuesta] = useState(false);
@@ -38,11 +39,6 @@ const Preguntas = () => {
       sessionStorage.removeItem("isPageReload");
     };
   }, [navigate]);
-
-
-
-
-
 
   const handleClickPregunta = () => {
     if (currentQuestion === "pregunta1") {
@@ -98,13 +94,12 @@ const Preguntas = () => {
         setCurrentQuestion("pregunta5"); // Cambia a la pregunta 5 después de respuesta4
       }, 8000); // 10 segundos
     } else if (currentQuestion === "respuesta5") {
-        // Mostrar respuesta5 durante 5 segundos
-        timer = setTimeout(() => {
-          setMostrarRespuesta(false);
-          setShowCierre(true); // Cambiar a mostrar la imagen de cierre
-        }, 5000); // 5 segundos
-      } 
-      
+      // Mostrar respuesta5 durante 5 segundos
+      timer = setTimeout(() => {
+        setMostrarRespuesta(false);
+        setShowCierre(true); // Cambiar a mostrar la imagen de cierre
+      }, 5000); // 5 segundos
+    }
 
     return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
   }, [currentQuestion]);
@@ -115,12 +110,12 @@ const Preguntas = () => {
     }, 5000); // 5 segundos
   }
 
-
   return (
-    <div className="relative">
+    <div className="relative w-full h-screen">
       <div>
         {currentQuestion === "pregunta1" && !mostrarRespuesta && (
-          <img src={pregunta1} alt="inicio" className="noZoom" />
+            
+          <img src={pregunta1} alt="inicio" className="noZoom  object-fill w-full h-screen " />
         )}
         {currentQuestion === "respuesta1" && mostrarRespuesta && (
           <img src={respuesta1} alt="respuesta" className="noZoom" />
@@ -194,9 +189,7 @@ const Preguntas = () => {
           <img src={respuesta5} alt="respuesta5" className="noZoom" />
         )}
         {/* Mostrar imagen de cierre después de respuesta5 */}
-        {showCierre && (
-          <img src={cierre} alt="cierre" className="noZoom" />
-        )}
+        {showCierre && <img src={cierre} alt="cierre" className="noZoom" />}
       </div>
       {currentQuestion !== "pregunta5" &&
         currentQuestion !== "respuesta5" &&
@@ -210,7 +203,7 @@ const Preguntas = () => {
               {/* Contenido del div */}
             </div>
             <div
-              className="absolute top-[985px] left-[550px] p-4 w-80 h-28 rounded-lg  cursor-pointer"
+              className="absolute top-[985px] left-[550px] p-4 w-80 h-28 rounded-lg  cursor-pointer "
               onClick={handleClickPregunta}
             >
               {/* Contenido del div */}

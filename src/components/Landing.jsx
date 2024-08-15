@@ -10,13 +10,13 @@ const Landing = () => {
 
   return (
     <div>
-      <div>
+      <div className="w-full h-screen">
         <img
           src={inicio}
           alt="inicio"
           onClick={handleClick}
-          className="noZoom"
-        ></img>
+          className="w-full h-full object-cover noZoom"
+        />
       </div>
     </div>
   );
