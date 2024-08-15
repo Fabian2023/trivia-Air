@@ -20,6 +20,30 @@ const Preguntas = () => {
   const [showCierre, setShowCierre] = useState(false); // Nuevo estado para manejar la imagen de cierre
   const navigate = useNavigate(); // Inicializar useNavigate
 
+  useEffect(() => {
+    // Verifica si la página fue recargada
+    const isPageReload = sessionStorage.getItem("isPageReload");
+
+    if (isPageReload) {
+      // Si la página fue recargada, redirige a "/"
+      navigate("/", { replace: true });
+      sessionStorage.removeItem("isPageReload"); // Limpia el flag
+    } else {
+      // Marca la página como recargada
+      sessionStorage.setItem("isPageReload", "true");
+    }
+
+    // Limpiar el flag en la salida del componente
+    return () => {
+      sessionStorage.removeItem("isPageReload");
+    };
+  }, [navigate]);
+
+
+
+
+
+
   const handleClickPregunta = () => {
     if (currentQuestion === "pregunta1") {
       setMostrarRespuesta(true);
@@ -56,45 +80,41 @@ const Preguntas = () => {
       timer = setTimeout(() => {
         setMostrarRespuesta(false);
         setCurrentQuestion("pregunta2");
-      }, 8000); // 8 segundos
+      }, 7000); // 8 segundos
     } else if (currentQuestion === "respuesta2") {
       timer = setTimeout(() => {
         setMostrarRespuesta(false);
         setCurrentQuestion("pregunta3");
-      }, 11000); // 12 segundos
+      }, 10000); // 12 segundos
     } else if (currentQuestion === "respuesta3") {
       timer = setTimeout(() => {
         setMostrarRespuesta(false);
         setCurrentQuestion("pregunta4"); // Avanzar a la pregunta 4
-      }, 9000); // 10 segundos
+      }, 8000); // 10 segundos
     } else if (currentQuestion === "respuesta4") {
       timer = setTimeout(() => {
         setMostrarRespuesta(false);
         // Aquí puedes finalizar el flujo o mostrar la pregunta 5
         setCurrentQuestion("pregunta5"); // Cambia a la pregunta 5 después de respuesta4
-      }, 9000); // 10 segundos
+      }, 8000); // 10 segundos
     } else if (currentQuestion === "respuesta5") {
-      // Mostrar respuesta5 durante 5 segundos
-      timer = setTimeout(() => {
-        setMostrarRespuesta(false);
-        setShowCierre(true); // Cambiar a mostrar la imagen de cierre
-      }, 5000); // 5 segundos
-    }
+        // Mostrar respuesta5 durante 5 segundos
+        timer = setTimeout(() => {
+          setMostrarRespuesta(false);
+          setShowCierre(true); // Cambiar a mostrar la imagen de cierre
+        }, 5000); // 5 segundos
+      } 
+      
 
     return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
   }, [currentQuestion]);
+  let timer;
+  if (showCierre) {
+    timer = setTimeout(() => {
+      navigate("/"); // Redirigir a la ruta /
+    }, 5000); // 5 segundos
+  }
 
-  // Nuevo useEffect para manejar la redirección después de mostrar la imagen de cierre
-  useEffect(() => {
-    let timer;
-    if (showCierre) {
-      timer = setTimeout(() => {
-        navigate("/"); // Redirigir a la ruta /
-      }, 5000); // 5 segundos
-    }
-    
-    return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
-  }, [showCierre, navigate]);
 
   return (
     <div className="relative">
