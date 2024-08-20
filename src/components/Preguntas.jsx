@@ -1,35 +1,47 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Importar useNavigate para la navegación
-import pregunta1 from "../images/PREGUNTA 1-1.png";
-import respuesta1 from "../images/PREGUNTA 1-2.png";
-import pregunta2 from "../images/PREGUNTA 2-2.png";
-import respuesta2 from "../images/PREGUNTA 2-1.png";
-import pregunta3 from "../images/PREGUNTA 3-2.png";
-import respuesta3 from "../images/PREGUNTA 3-1.png";
-import pregunta4 from "../images/PREGUNTA 4-1.png"; // Importar imagen de la pregunta 4
-import respuestaNo4 from "../images/PREGUNTA 4-2.png"; // Importar imagen de la respuesta "No"
-import respuestaSi4 from "../images/PREGUNTA 4-3.png"; // Importar imagen de la respuesta "Sí"
-import pregunta5 from "../images/PREGUNTA 5-1.png"; // Importar imagen de la pregunta 5
-import respuesta5 from "../images/PREGUNTA 5-2.png"; // Importar imagen de la respuesta 5
-import cierre from "../images/PANTALLA DE CIERRE.png"; // Importar imagen de cierre
-
+import { useNavigate } from "react-router-dom";
+import pregunta1 from "../images/PREGUNTA1VIDEO.mp4";
+import respuesta1 from "../images/RESPUESTA1VIDEO.mp4";
+import pregunta2 from "../images/PREGUNTA2VIDEO.mp4";
+import respuesta2 from "../images/RESPUESTA2VIDEO.mp4";
+import pregunta3 from "../images/PREGUNTA3VIDEO.mp4";
+import respuesta3 from "../images/RESPUESTA3VIDEO.mp4";
+import pregunta4 from "../images/PREGUNTA4VIDEO.mp4";
+import respuestaNo4 from "../images/RESPUESTANO4VIDEO.mp4";
+import respuestaSi4 from "../images/RESPUESTASI4VIDEO.mp4";
+import pregunta5 from "../images/PANTALLA 5 PREGUNTA.mp4";
+import respuesta5 from "../images/PANTALLA 5 RESPUESTA.mp4";
+import cierre from "../images/CIERREVIDEO.mp4";
 
 const Preguntas = () => {
-  const [currentQuestion, setCurrentQuestion] = useState("pregunta1");
+  const [currentQuestion, setCurrentQuestion] = useState(null);
   const [mostrarRespuesta, setMostrarRespuesta] = useState(false);
-  const [respuestaFinal, setRespuestaFinal] = useState(null); // Nuevo estado para las respuestas
-  const [showCierre, setShowCierre] = useState(false); // Nuevo estado para manejar la imagen de cierre
-  const navigate = useNavigate(); // Inicializar useNavigate
+  const [respuestaFinal, setRespuestaFinal] = useState(null);
+  const [showCierre, setShowCierre] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Verifica si la página fue recargada
     const isPageReload = sessionStorage.getItem("isPageReload");
+    const preguntasMostradas = JSON.parse(sessionStorage.getItem("preguntasMostradas")) || [];
 
     if (isPageReload) {
       // Si la página fue recargada, redirige a "/"
       navigate("/", { replace: true });
       sessionStorage.removeItem("isPageReload"); // Limpia el flag
     } else {
+      // Selecciona una pregunta aleatoria
+      const preguntas = [
+        "pregunta1",
+        "pregunta2",
+        "pregunta3",
+        "pregunta4",
+        "pregunta5",
+      ];
+      const preguntaAleatoria =
+        preguntas[Math.floor(Math.random() * preguntas.length)];
+      setCurrentQuestion(preguntaAleatoria);
+
       // Marca la página como recargada
       sessionStorage.setItem("isPageReload", "true");
     }
@@ -41,175 +53,233 @@ const Preguntas = () => {
   }, [navigate]);
 
   const handleClickPregunta = () => {
+    setMostrarRespuesta(true);
     if (currentQuestion === "pregunta1") {
-      setMostrarRespuesta(true);
       setCurrentQuestion("respuesta1");
     } else if (currentQuestion === "pregunta2") {
-      setMostrarRespuesta(true);
       setCurrentQuestion("respuesta2");
     } else if (currentQuestion === "pregunta3") {
-      setMostrarRespuesta(true);
       setCurrentQuestion("respuesta3");
     } else if (currentQuestion === "pregunta4") {
-      setMostrarRespuesta(true);
-      setCurrentQuestion("pregunta4"); // No cambies a respuesta4 aquí
-    } else if (currentQuestion === "respuesta4") {
-      // No hay acción adicional al hacer clic en respuesta4
+      setCurrentQuestion("respuesta4");
+    } else if (currentQuestion === "pregunta5") {
+      setCurrentQuestion("respuesta5");
     }
   };
 
   const handleClickRespuesta = (respuesta) => {
     setMostrarRespuesta(true);
-    setRespuestaFinal(respuesta); // Cambiar la respuesta basada en el clic
-    setCurrentQuestion("respuesta4"); // Cambia a respuesta4
-  };
-
-  const handleClickPregunta5 = () => {
-    setMostrarRespuesta(true);
-    setCurrentQuestion("respuesta5");
+    setRespuestaFinal(respuesta);
+    setCurrentQuestion("respuesta4");
   };
 
   useEffect(() => {
     let timer;
 
-    if (currentQuestion === "respuesta1") {
+    if (mostrarRespuesta) {
       timer = setTimeout(() => {
         setMostrarRespuesta(false);
-        setCurrentQuestion("pregunta2");
-      }, 7000); // 8 segundos
-    } else if (currentQuestion === "respuesta2") {
-      timer = setTimeout(() => {
-        setMostrarRespuesta(false);
-        setCurrentQuestion("pregunta3");
-      }, 10000); // 12 segundos
-    } else if (currentQuestion === "respuesta3") {
-      timer = setTimeout(() => {
-        setMostrarRespuesta(false);
-        setCurrentQuestion("pregunta4"); // Avanzar a la pregunta 4
-      }, 8000); // 10 segundos
-    } else if (currentQuestion === "respuesta4") {
-      timer = setTimeout(() => {
-        setMostrarRespuesta(false);
-        // Aquí puedes finalizar el flujo o mostrar la pregunta 5
-        setCurrentQuestion("pregunta5"); // Cambia a la pregunta 5 después de respuesta4
-      }, 8000); // 10 segundos
-    } else if (currentQuestion === "respuesta5") {
-      // Mostrar respuesta5 durante 5 segundos
-      timer = setTimeout(() => {
-        setMostrarRespuesta(false);
-        setShowCierre(true); // Cambiar a mostrar la imagen de cierre
-      }, 5000); // 5 segundos
+        setShowCierre(true); // Mostrar la imagen de cierre después de la respuesta
+      }, 12000); // Mostrar la respuesta durante 5 segundos
     }
 
     return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
-  }, [currentQuestion]);
-  let timer;
-  if (showCierre) {
-    timer = setTimeout(() => {
-      navigate("/"); // Redirigir a la ruta /
-    }, 5000); // 5 segundos
-  }
+  }, [mostrarRespuesta]);
+
+  useEffect(() => {
+    if (showCierre) {
+      const timer = setTimeout(() => {
+        navigate("/");
+      }, 8000);
+      return () => clearTimeout(timer);
+    }
+  }, [showCierre, navigate]);
 
   return (
-    <div className="relative w-full h-screen">
-      <div>
+    <div className="relative w-full h-screen overflow-hidden">
+      <div className="relative w-full h-full">
         {currentQuestion === "pregunta1" && !mostrarRespuesta && (
-            
-          <img src={pregunta1} alt="inicio" className="noZoom  object-fill w-full h-screen " />
-        )}
-        {currentQuestion === "respuesta1" && mostrarRespuesta && (
-          <img src={respuesta1} alt="respuesta" className="noZoom" />
-        )}
-        {currentQuestion === "pregunta2" && !mostrarRespuesta && (
-          <img src={pregunta2} alt="pregunta2" className="noZoom" />
-        )}
-        {currentQuestion === "respuesta2" && mostrarRespuesta && (
-          <img src={respuesta2} alt="respuesta2" className="noZoom" />
-        )}
-        {currentQuestion === "pregunta3" && !mostrarRespuesta && (
-          <div className="relative">
-            <img src={pregunta3} alt="pregunta3" className="noZoom" />
-            <div
-              className="absolute top-[600px] left-[120px] w-60 h-60"
-              onClick={handleClickPregunta}
-            ></div>
-            <div
-              className="absolute top-[600px] left-[420px] w-60 h-60"
-              onClick={handleClickPregunta}
-            ></div>
-            <div
-              className="absolute top-[600px] left-[720px]  w-60 h-60 "
-              onClick={handleClickPregunta}
-            ></div>
-          </div>
-        )}
-        {currentQuestion === "respuesta3" && mostrarRespuesta && (
-          <img src={respuesta3} alt="respuesta3" className="noZoom" />
-        )}
-        {currentQuestion === "pregunta4" && !mostrarRespuesta && (
-          <div className="relative">
-            <img src={pregunta4} alt="pregunta4" className="noZoom" />
-            <div
-              className="absolute top-[500px] left-[220px] w-[630px] h-[480px] "
-              onClick={() => handleClickRespuesta(respuestaNo4)} // Cambiar aquí
-            ></div>
-            <div
-              className="absolute top-[1020px] left-[220px] w-[630px] h-[480px] "
-              onClick={() => handleClickRespuesta(respuestaSi4)} // Cambiar aquí
-            ></div>
-          </div>
-        )}
-        {currentQuestion === "respuesta4" &&
-          mostrarRespuesta &&
-          respuestaFinal && (
-            <img src={respuestaFinal} alt="respuestaFinal" className="noZoom" />
-          )}
-        {currentQuestion === "pregunta5" && !mostrarRespuesta && (
-          <div className="relative">
-            <img src={pregunta5} alt="pregunta5" className="noZoom" />
-            <div
-              className="absolute top-[680px] left-[100px] w-[880px] h-14 "
-              onClick={handleClickPregunta5}
-            ></div>
-            <div
-              className="absolute top-[900px] left-[100px] w-[880px] h-14 "
-              onClick={handleClickPregunta5}
-            ></div>
-            <div
-              className="absolute top-[1020px] left-[100px] w-[880px] h-14"
-              onClick={handleClickPregunta5}
-            ></div>
-            <div
-              className="absolute top-[800px] left-[100px] w-[880px] h-14 "
-              onClick={handleClickPregunta5}
-            ></div>
-          </div>
-        )}
-        {currentQuestion === "respuesta5" && mostrarRespuesta && (
-          <img src={respuesta5} alt="respuesta5" className="noZoom" />
-        )}
-        {/* Mostrar imagen de cierre después de respuesta5 */}
-        {showCierre && <img src={cierre} alt="cierre" className="noZoom" />}
-      </div>
-      {currentQuestion !== "pregunta5" &&
-        currentQuestion !== "respuesta5" &&
-        currentQuestion !== "pregunta3" &&
-        currentQuestion !== "pregunta4" && (
           <>
+            <video
+              src={pregunta1}
+              className="w-full h-full object-cover noZoom"
+              autoPlay
+              loop
+              muted
+            />
             <div
-              className="absolute top-[985px] left-[200px] p-4 w-80 h-28 rounded-lg  cursor-pointer"
+              style={{ top: "51%", left: "18%", width: "30%", height: "6%" }}
+              className="absolute "
               onClick={handleClickPregunta}
             >
               {/* Contenido del div */}
             </div>
             <div
-              className="absolute top-[985px] left-[550px] p-4 w-80 h-28 rounded-lg  cursor-pointer "
+              style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
+              className="absolute"
               onClick={handleClickPregunta}
             >
               {/* Contenido del div */}
             </div>
           </>
         )}
+        {currentQuestion === "respuesta1" && mostrarRespuesta && (
+          <video
+            src={respuesta1}
+            className="w-full h-full object-cover noZoom"
+            autoPlay
+            loop
+            muted
+          />
+        )}
+        {currentQuestion === "pregunta2" && !mostrarRespuesta && (
+          <>
+            <video
+              src={pregunta2}
+              className="w-full h-full object-cover noZoom"
+              autoPlay
+              loop
+              muted
+            />
+            <div
+              style={{ top: "51%", left: "18%", width: "30%", height: "6%" }}
+              className="absolute "
+              onClick={handleClickPregunta}
+            >
+              {/* Contenido del div */}
+            </div>
+            <div
+              style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
+              className="absolute"
+              onClick={handleClickPregunta}
+            >
+              {/* Contenido del div */}
+            </div>
+          </>
+        )}
+        {currentQuestion === "respuesta2" && mostrarRespuesta && (
+          <video
+            src={respuesta2}
+            className="w-full h-full object-cover noZoom"
+            autoPlay
+            loop
+            muted
+          />
+        )}
+        {currentQuestion === "pregunta3" && !mostrarRespuesta && (
+          <>
+            <video
+              src={pregunta3}
+              className="w-full h-full object-cover noZoom"
+              autoPlay
+              loop
+              muted
+            />
+            <div
+              style={{ top: "41%", left: "10%", width: "85%", height: "10%" }}
+              className="absolute"
+              onClick={handleClickPregunta}
+            ></div>
+          </>
+        )}
+        {currentQuestion === "respuesta3" && mostrarRespuesta && (
+          <video
+            src={respuesta3}
+            className="w-full h-full object-cover noZoom"
+            autoPlay
+            loop
+            muted
+          />
+        )}
+        {currentQuestion === "pregunta4" && !mostrarRespuesta && (
+          <>
+            <video
+              src={pregunta4}
+              className="w-full h-full object-cover noZoom"
+              autoPlay
+              loop
+              muted
+            />
+            <div
+              style={{ top: "27%", left: "20%", width: "60%", height: "25%" }}
+              className="absolute "
+              onClick={() => handleClickRespuesta(respuestaNo4)}
+            >
+              
+            </div>
+            <div
+              style={{ top: "53%", left: "20%", width: "60%", height: "25%" }}
+              className="absolute"
+              onClick={() => handleClickRespuesta(respuestaSi4)}
+            >
+              
+            </div>
+          </>
+        )}
+        {currentQuestion === "respuesta4" && mostrarRespuesta && (
+          <video
+          src={respuestaFinal}
+          className="w-full h-full object-cover noZoom"
+          autoPlay
+          loop
+          muted
+        />
+        )}
+        {currentQuestion === "pregunta5" && !mostrarRespuesta && (
+          <>
+            <video
+              src={pregunta5}
+              className="w-full h-full object-cover noZoom"
+              autoPlay
+              loop
+              muted
+            />
+            <div
+              style={{ top: "58%", left: "10%", width: "80%", height: "24%" }}
+              className="absolute"
+              onClick={handleClickPregunta}
+            ></div>
+            {/* <div
+              style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
+              className="absolute bg-green-500 "
+              onClick={handleClickPregunta}
+            ></div>
+            <div
+              style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
+              className="absolute bg-green-500 "
+              onClick={handleClickPregunta}
+            ></div>
+            <div
+              style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
+              className="absolute bg-green-500 "
+              onClick={handleClickPregunta}
+            ></div>
+            <div
+              style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
+              className="absolute bg-green-500 "
+              onClick={handleClickPregunta}
+            ></div> */}
+          </>
+        )}
+        {currentQuestion === "respuesta5" && mostrarRespuesta && (
+         <video
+         src={respuesta5}
+         className="w-full h-full object-cover noZoom"
+         autoPlay
+         loop
+         muted
+       />
+        )}
+        {showCierre && (
+          <video
+          src={cierre}
+          className="w-full h-full object-cover noZoom"
+          autoPlay
+          loop
+          muted
+        />
+        )}
+      </div>
     </div>
   );
 };
