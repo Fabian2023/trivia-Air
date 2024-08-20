@@ -18,19 +18,16 @@ const Preguntas = () => {
   const [mostrarRespuesta, setMostrarRespuesta] = useState(false);
   const [respuestaFinal, setRespuestaFinal] = useState(null);
   const [showCierre, setShowCierre] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Verifica si la página fue recargada
     const isPageReload = sessionStorage.getItem("isPageReload");
-    const preguntasMostradas = JSON.parse(sessionStorage.getItem("preguntasMostradas")) || [];
 
     if (isPageReload) {
-      // Si la página fue recargada, redirige a "/"
       navigate("/", { replace: true });
-      sessionStorage.removeItem("isPageReload"); // Limpia el flag
+      sessionStorage.removeItem("isPageReload");
     } else {
-      // Selecciona una pregunta aleatoria
       const preguntas = [
         "pregunta1",
         "pregunta2",
@@ -41,18 +38,16 @@ const Preguntas = () => {
       const preguntaAleatoria =
         preguntas[Math.floor(Math.random() * preguntas.length)];
       setCurrentQuestion(preguntaAleatoria);
-
-      // Marca la página como recargada
       sessionStorage.setItem("isPageReload", "true");
     }
 
-    // Limpiar el flag en la salida del componente
     return () => {
       sessionStorage.removeItem("isPageReload");
     };
   }, [navigate]);
 
   const handleClickPregunta = () => {
+    setIsLoading(true); // Mostrar fondo de carga
     setMostrarRespuesta(true);
     if (currentQuestion === "pregunta1") {
       setCurrentQuestion("respuesta1");
@@ -68,6 +63,7 @@ const Preguntas = () => {
   };
 
   const handleClickRespuesta = (respuesta) => {
+    setIsLoading(true); // Mostrar fondo de carga
     setMostrarRespuesta(true);
     setRespuestaFinal(respuesta);
     setCurrentQuestion("respuesta4");
@@ -78,25 +74,36 @@ const Preguntas = () => {
 
     if (mostrarRespuesta) {
       timer = setTimeout(() => {
+        setIsLoading(true); // Mostrar fondo de carga antes del cierre
         setMostrarRespuesta(false);
-        setShowCierre(true); // Mostrar la imagen de cierre después de la respuesta
-      }, 12000); // Mostrar la respuesta durante 5 segundos
+        setShowCierre(true);
+      }, 12000);
     }
 
-    return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
+    return () => clearTimeout(timer);
   }, [mostrarRespuesta]);
 
   useEffect(() => {
     if (showCierre) {
       const timer = setTimeout(() => {
         navigate("/");
+        setIsLoading(true);
       }, 8000);
       return () => clearTimeout(timer);
     }
   }, [showCierre, navigate]);
 
+  const handleVideoLoadedData = () => {
+    setIsLoading(false);
+  };
+
   return (
     <div className="relative w-full h-screen overflow-hidden">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-[#15438F] z-50">
+          {/* Puedes agregar un spinner o mensaje de "Cargando..." aquí si lo deseas */}
+        </div>
+      )}
       <div className="relative w-full h-full">
         {currentQuestion === "pregunta1" && !mostrarRespuesta && (
           <>
@@ -106,21 +113,18 @@ const Preguntas = () => {
               autoPlay
               loop
               muted
+              onLoadedData={handleVideoLoadedData}
             />
             <div
               style={{ top: "51%", left: "18%", width: "30%", height: "6%" }}
-              className="absolute "
+              className="absolute"
               onClick={handleClickPregunta}
-            >
-              {/* Contenido del div */}
-            </div>
+            ></div>
             <div
               style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
               className="absolute"
               onClick={handleClickPregunta}
-            >
-              {/* Contenido del div */}
-            </div>
+            ></div>
           </>
         )}
         {currentQuestion === "respuesta1" && mostrarRespuesta && (
@@ -130,6 +134,7 @@ const Preguntas = () => {
             autoPlay
             loop
             muted
+            onLoadedData={handleVideoLoadedData}
           />
         )}
         {currentQuestion === "pregunta2" && !mostrarRespuesta && (
@@ -140,21 +145,18 @@ const Preguntas = () => {
               autoPlay
               loop
               muted
+              onLoadedData={handleVideoLoadedData}
             />
             <div
               style={{ top: "51%", left: "18%", width: "30%", height: "6%" }}
-              className="absolute "
+              className="absolute"
               onClick={handleClickPregunta}
-            >
-              {/* Contenido del div */}
-            </div>
+            ></div>
             <div
               style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
               className="absolute"
               onClick={handleClickPregunta}
-            >
-              {/* Contenido del div */}
-            </div>
+            ></div>
           </>
         )}
         {currentQuestion === "respuesta2" && mostrarRespuesta && (
@@ -164,6 +166,7 @@ const Preguntas = () => {
             autoPlay
             loop
             muted
+            onLoadedData={handleVideoLoadedData}
           />
         )}
         {currentQuestion === "pregunta3" && !mostrarRespuesta && (
@@ -174,6 +177,7 @@ const Preguntas = () => {
               autoPlay
               loop
               muted
+              onLoadedData={handleVideoLoadedData}
             />
             <div
               style={{ top: "41%", left: "10%", width: "85%", height: "10%" }}
@@ -189,6 +193,7 @@ const Preguntas = () => {
             autoPlay
             loop
             muted
+            onLoadedData={handleVideoLoadedData}
           />
         )}
         {currentQuestion === "pregunta4" && !mostrarRespuesta && (
@@ -199,31 +204,29 @@ const Preguntas = () => {
               autoPlay
               loop
               muted
+              onLoadedData={handleVideoLoadedData}
             />
             <div
               style={{ top: "27%", left: "20%", width: "60%", height: "25%" }}
               className="absolute "
               onClick={() => handleClickRespuesta(respuestaNo4)}
-            >
-              
-            </div>
+            ></div>
             <div
               style={{ top: "53%", left: "20%", width: "60%", height: "25%" }}
               className="absolute"
               onClick={() => handleClickRespuesta(respuestaSi4)}
-            >
-              
-            </div>
+            ></div>
           </>
         )}
         {currentQuestion === "respuesta4" && mostrarRespuesta && (
           <video
-          src={respuestaFinal}
-          className="w-full h-full object-cover noZoom"
-          autoPlay
-          loop
-          muted
-        />
+            src={respuestaFinal}
+            className="w-full h-full object-cover noZoom"
+            autoPlay
+            loop
+            muted
+            onLoadedData={handleVideoLoadedData}
+          />
         )}
         {currentQuestion === "pregunta5" && !mostrarRespuesta && (
           <>
@@ -233,51 +236,34 @@ const Preguntas = () => {
               autoPlay
               loop
               muted
+              onLoadedData={handleVideoLoadedData}
             />
             <div
               style={{ top: "58%", left: "10%", width: "80%", height: "24%" }}
               className="absolute"
               onClick={handleClickPregunta}
             ></div>
-            {/* <div
-              style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
-              className="absolute bg-green-500 "
-              onClick={handleClickPregunta}
-            ></div>
-            <div
-              style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
-              className="absolute bg-green-500 "
-              onClick={handleClickPregunta}
-            ></div>
-            <div
-              style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
-              className="absolute bg-green-500 "
-              onClick={handleClickPregunta}
-            ></div>
-            <div
-              style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
-              className="absolute bg-green-500 "
-              onClick={handleClickPregunta}
-            ></div> */}
           </>
         )}
         {currentQuestion === "respuesta5" && mostrarRespuesta && (
-         <video
-         src={respuesta5}
-         className="w-full h-full object-cover noZoom"
-         autoPlay
-         loop
-         muted
-       />
+          <video
+            src={respuesta5}
+            className="w-full h-full object-cover noZoom"
+            autoPlay
+            loop
+            muted
+            onLoadedData={handleVideoLoadedData}
+          />
         )}
         {showCierre && (
           <video
-          src={cierre}
-          className="w-full h-full object-cover noZoom"
-          autoPlay
-          loop
-          muted
-        />
+            src={cierre}
+            className="w-full h-full object-cover noZoom"
+            autoPlay
+            loop
+            muted
+            onLoadedData={handleVideoLoadedData}
+          />
         )}
       </div>
     </div>
