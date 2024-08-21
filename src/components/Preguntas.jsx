@@ -221,12 +221,12 @@ const Preguntas = () => {
               onLoadedData={handleVideoLoadedData}
             />
             <div
-              style={{ top: "27%", left: "20%", width: "60%", height: "25%" }}
-              className="absolute "
+              style={{ top: "27%", left: "5%", width: "90%", height: "25%" }}
+              className="absolute"
               onClick={() => handleClickRespuesta(respuestaNo4)}
             ></div>
             <div
-              style={{ top: "53%", left: "20%", width: "60%", height: "25%" }}
+              style={{ top: "53%", left: "5%", width: "90%", height: "25%" }}
               className="absolute"
               onClick={() => handleClickRespuesta(respuestaSi4)}
             ></div>
@@ -253,7 +253,7 @@ const Preguntas = () => {
               onLoadedData={handleVideoLoadedData}
             />
             <div
-              style={{ top: "58%", left: "10%", width: "80%", height: "24%" }}
+              style={{ top: "38%", left: "10%", width: "80%", height: "44%" }}
               className="absolute"
               onClick={handleClickPregunta}
             ></div>
