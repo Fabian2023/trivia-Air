@@ -19,6 +19,13 @@ const Preguntas = () => {
   const [respuestaFinal, setRespuestaFinal] = useState(null);
   const [showCierre, setShowCierre] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [remainingQuestions, setRemainingQuestions] = useState([
+    "pregunta1",
+    "pregunta2",
+    "pregunta3",
+    "pregunta4",
+    "pregunta5",
+  ]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,16 +35,7 @@ const Preguntas = () => {
       navigate("/", { replace: true });
       sessionStorage.removeItem("isPageReload");
     } else {
-      const preguntas = [
-        "pregunta1",
-        "pregunta2",
-        "pregunta3",
-        "pregunta4",
-        "pregunta5",
-      ];
-      const preguntaAleatoria =
-        preguntas[Math.floor(Math.random() * preguntas.length)];
-      setCurrentQuestion(preguntaAleatoria);
+      selectRandomQuestion();
       sessionStorage.setItem("isPageReload", "true");
     }
 
@@ -46,7 +44,23 @@ const Preguntas = () => {
     };
   }, [navigate]);
 
-  const handleClickPregunta = () => {
+  const selectRandomQuestion = () => {
+    if (remainingQuestions.length > 0) {
+      const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
+      const preguntaAleatoria = remainingQuestions[randomIndex];
+      console.log("Pregunta seleccionada:", preguntaAleatoria);
+
+      // Actualizar el estado eliminando la pregunta seleccionada
+      setRemainingQuestions(prevQuestions =>
+        prevQuestions.filter((_, index) => index !== randomIndex)
+      );
+
+      setCurrentQuestion(preguntaAleatoria);
+    } else {
+      console.log("No hay más preguntas disponibles.");
+    }
+  };
+ const handleClickPregunta = () => {
     setIsLoading(true); // Mostrar fondo de carga
     setMostrarRespuesta(true);
     if (currentQuestion === "pregunta1") {
@@ -77,7 +91,7 @@ const Preguntas = () => {
         setIsLoading(true); // Mostrar fondo de carga antes del cierre
         setMostrarRespuesta(false);
         setShowCierre(true);
-      }, 12000);
+      }, 14000);
     }
 
     return () => clearTimeout(timer);
@@ -88,7 +102,7 @@ const Preguntas = () => {
       const timer = setTimeout(() => {
         navigate("/");
         setIsLoading(true);
-      }, 8000);
+      }, 12000);
       return () => clearTimeout(timer);
     }
   }, [showCierre, navigate]);
@@ -101,7 +115,7 @@ const Preguntas = () => {
     <div className="relative w-full h-screen overflow-hidden">
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-[#15438F] z-50">
-          {/* Puedes agregar un spinner o mensaje de "Cargando..." aquí si lo deseas */}
+          
         </div>
       )}
       <div className="relative w-full h-full">
