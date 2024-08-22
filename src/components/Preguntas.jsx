@@ -14,18 +14,16 @@ import respuesta5 from "../images/PANTALLA 5 RESPUESTA.mp4";
 import cierre from "../images/CIERREVIDEO.mp4";
 
 const Preguntas = () => {
+  const initialQuestions = ["pregunta1", "pregunta2", "pregunta3", "pregunta4", "pregunta5"];
+  
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [mostrarRespuesta, setMostrarRespuesta] = useState(false);
   const [respuestaFinal, setRespuestaFinal] = useState(null);
   const [showCierre, setShowCierre] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [remainingQuestions, setRemainingQuestions] = useState([
-    "pregunta1",
-    "pregunta2",
-    "pregunta3",
-    "pregunta4",
-    "pregunta5",
-  ]);
+  const [remainingQuestions, setRemainingQuestions] = useState([...initialQuestions]);
+  const [clickDisabled, setClickDisabled] = useState(false); // Estado para controlar el clic
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,42 +43,58 @@ const Preguntas = () => {
   }, [navigate]);
 
   const selectRandomQuestion = () => {
-    if (remainingQuestions.length > 0) {
-      const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
-      const preguntaAleatoria = remainingQuestions[randomIndex];
-      console.log("Pregunta seleccionada:", preguntaAleatoria);
-
-      // Actualizar el estado eliminando la pregunta seleccionada
-      setRemainingQuestions(prevQuestions =>
-        prevQuestions.filter((_, index) => index !== randomIndex)
-      );
-
-      setCurrentQuestion(preguntaAleatoria);
-    } else {
-      console.log("No hay más preguntas disponibles.");
+    if (remainingQuestions.length === 0) {
+      // Reiniciar las preguntas si todas ya han sido usadas
+      setRemainingQuestions([...initialQuestions]);
     }
+
+    const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
+    const preguntaAleatoria = remainingQuestions[randomIndex];
+    console.log("Pregunta seleccionada:", preguntaAleatoria);
+
+    // Actualizar el estado eliminando la pregunta seleccionada
+    setRemainingQuestions(prevQuestions =>
+      prevQuestions.filter((_, index) => index !== randomIndex)
+    );
+
+    setCurrentQuestion(preguntaAleatoria);
   };
- const handleClickPregunta = () => {
+
+  const handleClickPregunta = () => {
+    if (clickDisabled) return; // No hacer nada si el clic está deshabilitado
+
+    setClickDisabled(true); // Deshabilitar el clic
     setIsLoading(true); // Mostrar fondo de carga
     setMostrarRespuesta(true);
-    if (currentQuestion === "pregunta1") {
-      setCurrentQuestion("respuesta1");
-    } else if (currentQuestion === "pregunta2") {
-      setCurrentQuestion("respuesta2");
-    } else if (currentQuestion === "pregunta3") {
-      setCurrentQuestion("respuesta3");
-    } else if (currentQuestion === "pregunta4") {
-      setCurrentQuestion("respuesta4");
-    } else if (currentQuestion === "pregunta5") {
-      setCurrentQuestion("respuesta5");
-    }
+
+    setTimeout(() => {
+      if (currentQuestion === "pregunta1") {
+        setCurrentQuestion("respuesta1");
+      } else if (currentQuestion === "pregunta2") {
+        setCurrentQuestion("respuesta2");
+      } else if (currentQuestion === "pregunta3") {
+        setCurrentQuestion("respuesta3");
+      } else if (currentQuestion === "pregunta4") {
+        setCurrentQuestion("respuesta4");
+      } else if (currentQuestion === "pregunta5") {
+        setCurrentQuestion("respuesta5");
+      }
+      // Rehabilitar clic después de 3 segundos
+      setTimeout(() => setClickDisabled(false), 3000);
+    }, 0);
   };
 
   const handleClickRespuesta = (respuesta) => {
+    if (clickDisabled) return; // No hacer nada si el clic está deshabilitado
+
+    setClickDisabled(true); // Deshabilitar el clic
     setIsLoading(true); // Mostrar fondo de carga
     setMostrarRespuesta(true);
     setRespuestaFinal(respuesta);
     setCurrentQuestion("respuesta4");
+
+    // Rehabilitar clic después de 3 segundos
+    setTimeout(() => setClickDisabled(false), 3000);
   };
 
   useEffect(() => {
@@ -100,7 +114,7 @@ const Preguntas = () => {
   useEffect(() => {
     if (showCierre) {
       const timer = setTimeout(() => {
-        navigate("/");
+        navigate("/?reload=true");
         setIsLoading(true);
       }, 12000);
       return () => clearTimeout(timer);
@@ -115,7 +129,7 @@ const Preguntas = () => {
     <div className="relative w-full h-screen overflow-hidden">
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-[#15438F] z-50">
-          
+          {/* Fondo de carga */}
         </div>
       )}
       <div className="relative w-full h-full">
@@ -254,6 +268,11 @@ const Preguntas = () => {
             />
             <div
               style={{ top: "38%", left: "10%", width: "80%", height: "44%" }}
+              className="absolute"
+              onClick={handleClickPregunta}
+            ></div>
+            <div
+              style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
               className="absolute"
               onClick={handleClickPregunta}
             ></div>
