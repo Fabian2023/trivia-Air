@@ -22,7 +22,7 @@ const Preguntas = () => {
   const [showCierre, setShowCierre] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [remainingQuestions, setRemainingQuestions] = useState([...initialQuestions]);
-  const [clickDisabled, setClickDisabled] = useState(false); // Estado para controlar el clic
+  const [clickDisabled, setClickDisabled] = useState(false);
 
   const navigate = useNavigate();
 
@@ -44,7 +44,6 @@ const Preguntas = () => {
 
   const selectRandomQuestion = () => {
     if (remainingQuestions.length === 0) {
-      // Reiniciar las preguntas si todas ya han sido usadas
       setRemainingQuestions([...initialQuestions]);
     }
 
@@ -52,69 +51,62 @@ const Preguntas = () => {
     const preguntaAleatoria = remainingQuestions[randomIndex];
     console.log("Pregunta seleccionada:", preguntaAleatoria);
 
-    // Actualizar el estado eliminando la pregunta seleccionada
     setRemainingQuestions(prevQuestions =>
       prevQuestions.filter((_, index) => index !== randomIndex)
     );
 
     setCurrentQuestion(preguntaAleatoria);
+    setMostrarRespuesta(false);
   };
 
   const handleClickPregunta = () => {
-    if (clickDisabled) return; // No hacer nada si el clic está deshabilitado
+    if (clickDisabled || mostrarRespuesta) return;
 
-    setClickDisabled(true); // Deshabilitar el clic
-    setIsLoading(true); // Mostrar fondo de carga
+    setClickDisabled(true);
+    setIsLoading(true);
     setMostrarRespuesta(true);
 
     setTimeout(() => {
-      if (currentQuestion === "pregunta1") {
-        setCurrentQuestion("respuesta1");
-      } else if (currentQuestion === "pregunta2") {
-        setCurrentQuestion("respuesta2");
-      } else if (currentQuestion === "pregunta3") {
-        setCurrentQuestion("respuesta3");
-      } else if (currentQuestion === "pregunta4") {
-        setCurrentQuestion("respuesta4");
-      } else if (currentQuestion === "pregunta5") {
-        setCurrentQuestion("respuesta5");
-      }
-      // Rehabilitar clic después de 3 segundos
+      let respuesta = "";
+      if (currentQuestion === "pregunta1") respuesta = "respuesta1";
+      if (currentQuestion === "pregunta2") respuesta = "respuesta2";
+      if (currentQuestion === "pregunta3") respuesta = "respuesta3";
+      if (currentQuestion === "pregunta4") respuesta = "respuesta4";
+      if (currentQuestion === "pregunta5") respuesta = "respuesta5";
+
+      setCurrentQuestion(respuesta);
       setTimeout(() => setClickDisabled(false), 3000);
     }, 0);
   };
 
   const handleClickRespuesta = (respuesta) => {
-    if (clickDisabled) return; // No hacer nada si el clic está deshabilitado
+    if (clickDisabled || mostrarRespuesta) return;
 
-    setClickDisabled(true); // Deshabilitar el clic
-    setIsLoading(true); // Mostrar fondo de carga
+    setClickDisabled(true);
+    setIsLoading(true);
     setMostrarRespuesta(true);
     setRespuestaFinal(respuesta);
-    setCurrentQuestion("respuesta4");
 
-    // Rehabilitar clic después de 3 segundos
+    setCurrentQuestion("respuesta4");
     setTimeout(() => setClickDisabled(false), 3000);
   };
 
   useEffect(() => {
     let timer;
-
     if (mostrarRespuesta) {
       timer = setTimeout(() => {
-        setIsLoading(true); // Mostrar fondo de carga antes del cierre
+        setIsLoading(true);
         setMostrarRespuesta(false);
         setShowCierre(true);
       }, 14000);
     }
-
     return () => clearTimeout(timer);
   }, [mostrarRespuesta]);
 
   useEffect(() => {
     if (showCierre) {
       const timer = setTimeout(() => {
-        navigate("/?reload=true");
+        navigate("/");
         setIsLoading(true);
       }, 12000);
       return () => clearTimeout(timer);
@@ -272,7 +264,7 @@ const Preguntas = () => {
               onClick={handleClickPregunta}
             ></div>
             <div
-              style={{ top: "51%", left: "52%", width: "30%", height: "6%" }}
+              style={{ top: "35%", left: "25%", width: "50%", height: "5%" }}
               className="absolute"
               onClick={handleClickPregunta}
             ></div>
