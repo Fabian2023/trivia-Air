@@ -227,13 +227,13 @@ const Preguntas = () => {
               onLoadedData={handleVideoLoadedData}
             />
             <div
-              style={{ top: "27%", left: "5%", width: "90%", height: "25%" }}
-              className="absolute"
+              style={{ top: "37%", left: "5%", width: "40%", height: "25%" }}
+              className="absolute "
               onClick={() => handleClickRespuesta(respuestaNo4)}
             ></div>
             <div
-              style={{ top: "53%", left: "5%", width: "90%", height: "25%" }}
-              className="absolute"
+              style={{ top: "37%", left: "55%", width: "40%", height: "25%" }}
+              className="absolute "
               onClick={() => handleClickRespuesta(respuestaSi4)}
             ></div>
           </>
